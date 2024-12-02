@@ -1,0 +1,51 @@
+# Prepare a DataFrame to store results for the updated data
+updated_distinct_ngram_results = []
+
+# Iterate through numbers 1 to 80 to calculate distinct n-grams for each set of responses
+for number in range(1, 81):
+    row_data = updated_grading_data[updated_grading_data['Number'] == number]
+    if not row_data.empty:
+        responses = [
+            row_data['Response1'].values[0],
+            row_data['Response2'].values[0],
+            row_data['Response3'].values[0]
+        ]
+        for n in range(1, 4):  # Analyze unigrams, bigrams, trigrams
+            unique, total, score = calculate_distinct_ngrams_per_row(responses, n)
+            updated_distinct_ngram_results.append({
+                'Number': number,
+                'n-gram': f"{n}-gram",
+                'Unique n-grams': unique,
+                'Total n-grams': total,
+                'Distinct n-gram Score': score
+            })
+
+# Convert results to a DataFrame
+updated_distinct_ngram_df = pd.DataFrame(updated_distinct_ngram_results)
+
+# Plot the updated distinct n-gram scores for visualization
+plt.figure(figsize=(12, 6))
+for ngram in updated_distinct_ngram_df['n-gram'].unique():
+    subset = updated_distinct_ngram_df[updated_distinct_ngram_df['n-gram'] == ngram]
+    plt.plot(subset['Number'], subset['Distinct n-gram Score'], label=ngram, marker='o')
+
+# Add labels, title, and legend
+plt.title('Updated Distinct n-gram Scores Across Numbers 1 to 80', fontsize=14)
+plt.xlabel('Number', fontsize=12)
+plt.ylabel('Distinct n-gram Score', fontsize=12)
+plt.legend(title='n-gram Type')
+plt.grid(True)
+plt.tight_layout()
+
+# Show the plot
+plt.show()
+
+# Add labels, title, and legend
+plt.title('Updated Distinct n-gram Scores (1-gram and 2-gram) Across Numbers 1 to 80', fontsize=14)
+plt.xlabel('Number', fontsize=12)
+plt.ylabel('Distinct n-gram Score', fontsize=12)
+plt.legend(title='n-gram Type')
+plt.tight_layout()
+
+# Show the plot
+plt.show()
